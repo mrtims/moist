@@ -7,7 +7,7 @@
         {
             "name": "Cortex Debug",
             "cwd": "${workspaceRoot}",
-            "executable": "./target/thumbv7em-none-eabihf/debug/moist",
+            "executable": "./target/thumbv7em-none-eabihf/debug/stm32f429",
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",
@@ -17,7 +17,7 @@
             ],
             "runToMain": true,
             "svdFile": "${workspaceRoot}/../cmsis-svd/data/STMicro/STM32F429.svd",
-            "preLaunchTask": "build",
+            "preLaunchTask": "build-stm32f429",
         },
     ]
 }

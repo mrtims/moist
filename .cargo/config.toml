@@ -1,0 +1,17 @@
+[alias]
+build-simulation = "build --bin simulation"
+build-stm32f429 = "build --bin stm32f429 --target thumbv7em-none-eabihf"
+run-simulation = "run --bin simulation"
+run-stm32f429 = "run --bin stm32f429 --target thumbv7em-none-eabihf"
+# We can't run tests for ARM code as the test harness requires std.
+# The next best thing is to run tests in the agnostic libraries only.
+# This only works as there are no ARM-specific libraries, and no tests directly in the simulation binary.
+test-lib = "test --lib"
+
+[target.'cfg(all(target_arch = "arm", target_os = "none"))']
+runner = "arm-none-eabi-gdb -x openocd.gdb"
+
+rustflags = [
+  # LLD (shipped with the Rust toolchain) is used as the default linker
+  "-C", "link-arg=-Tlink.x",
+]

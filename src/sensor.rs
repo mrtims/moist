@@ -45,6 +45,7 @@ impl From<RawReading> for String<{ MAX_STR_LEN }> {
     }
 }
 
+#[derive(Debug)]
 enum ReadingError {
     NoSensor,
     Calibration,
@@ -105,5 +106,30 @@ impl From<Percent> for String<{ MAX_STR_LEN }> {
                 Self::from("Unplugged")
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+
+    use super::*;
+
+    // Some trivial smoke tests for converting the ADC reading to a calibrated Percent
+    #[test]
+    fn test_trivial_calibrated_value() {
+        assert_eq!(Percent::calibrated_value(0, 0, 100).ok(), Some(0f32));
+        assert_eq!(Percent::calibrated_value(25, 0, 100).ok(), Some(25f32));
+        assert_eq!(Percent::calibrated_value(50, 0, 100).ok(), Some(50f32));
+        assert_eq!(Percent::calibrated_value(75, 0, 100).ok(), Some(75f32));
+        assert_eq!(Percent::calibrated_value(100, 0, 100).ok(), Some(100f32));
+    }
+
+    #[test]
+    fn test_inverted_trivial_calibrated_value() {
+        assert_eq!(Percent::calibrated_value(0, 100, 0).ok(), Some(100f32));
+        assert_eq!(Percent::calibrated_value(25, 100, 0).ok(), Some(75f32));
+        assert_eq!(Percent::calibrated_value(50, 100, 0).ok(), Some(50f32));
+        assert_eq!(Percent::calibrated_value(75, 100, 0).ok(), Some(25f32));
+        assert_eq!(Percent::calibrated_value(100, 100, 0).ok(), Some(0f32));
     }
 }

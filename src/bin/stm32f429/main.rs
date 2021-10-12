@@ -9,7 +9,7 @@ use hal::{
     spi::{NoMiso, Spi},
 };
 use ili9341::{DisplaySize240x320, Ili9341, Orientation, SPI_MODE};
-use moist::{draw_bg, draw_ui, sensor::Sensor, World};
+use moist::{sensor::Sensor, ui};
 use panic_semihosting as _;
 
 use crate::hal::{prelude::*, stm32};
@@ -74,7 +74,7 @@ fn main() -> ! {
         let mut read_plant2 = || adc.borrow_mut().read(&mut plant2).ok();
         let mut read_plant3 = || adc.borrow_mut().read(&mut plant3).ok();
 
-        let mut world = World::default();
+        let mut world = ui::World::default();
 
         // Calibration values from dunking in a glass of water and drying off
         // Very scientific...
@@ -100,10 +100,10 @@ fn main() -> ! {
         let mut green_led = gpiog.pg13.into_push_pull_output();
         green_led.set_high().ok();
 
-        draw_bg(&mut lcd).unwrap();
+        ui::draw_bg(&mut lcd).unwrap();
         loop {
             world.show_raw = user_button.is_high().unwrap_or_default();
-            draw_ui(&mut lcd, &mut world).unwrap();
+            ui::draw_ui(&mut lcd, &mut world).unwrap();
             delay.delay_ms(1000u16 / 30);
         }
     }

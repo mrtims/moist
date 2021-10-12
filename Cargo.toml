@@ -3,21 +3,26 @@ name = "moist"
 version = "0.1.0"
 authors = ["Tim Smaill <timsmaill213@gmail.com>"]
 edition = "2018"
+# Must use resolver v2 to avoid a std/no-std clash when building for different targets
+# https://doc.rust-lang.org/cargo/reference/features.html#feature-resolver-version-2
+resolver = "2"
+default-run = "simulation"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
+embedded-graphics="0.7.1"
+heapless = "0.7.7"
+profont = "0.5.0"
+
+[target.'cfg(all(target_arch = "arm", target_os = "none"))'.dependencies]
 cortex-m = "0.7"
 cortex-m-rt = "0.6.15"
 cortex-m-semihosting = "0.3"
 panic-semihosting = "0.5"
+stm32f4xx-hal = { version = "0.9.0", features = ["stm32f429", "rt"]}
 ili9341 = { git = "https://github.com/yuri91/ili9341-rs.git", branch = "master", features=["graphics"] }
 embedded-hal = "0.2.3"
-embedded-graphics="0.7.1"
 display-interface-spi = "0.4.1"
-heapless = "0.7.7"
-profont = "0.5.0"
 
-[dependencies.stm32f4xx-hal]
-version = "0.9.0"
-features = ["stm32f429", "rt"]
+[target.'cfg(not(all(target_arch = "arm", target_os = "none")))'.dependencies]
+embedded-graphics-simulator="*"
